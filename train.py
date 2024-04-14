@@ -51,22 +51,23 @@ def main():
     run.log("Regularization Strength:", np.float(args.C))
     run.log("Max iterations:", np.int(args.max_iter))
 
-    # TODO: Create TabularDataset using TabularDatasetFactory
-    # Data is located at:
-    # "https://automlsamplenotebookdata.blob.core.windows.net/automl-sample-notebook-data/bankmarketing_train.csv"
-
-    ds = ### YOUR CODE HERE ###
+    # Create TabularDataset using TabularDatasetFactory
+    data_path = "https://automlsamplenotebookdata.blob.core.windows.net/automl-sample-notebook-data/bankmarketing_train.csv"
+    ds = TabularDatasetFactory.from_delimited_files(path=data_path)
     
     x, y = clean_data(ds)
 
-    # TODO: Split data into train and test sets.
-
-    ### YOUR CODE HERE ###a
+    # Split data into train and test sets.
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.1, random_state=100)
 
     model = LogisticRegression(C=args.C, max_iter=args.max_iter).fit(x_train, y_train)
 
     accuracy = model.score(x_test, y_test)
     run.log("Accuracy", np.float(accuracy))
+    
+    # Save the trained model
+    os.makedirs('outputs', exist_ok=True)
+    joblib.dump(value=model, filename='outputs/model.pkl')
 
 if __name__ == '__main__':
     main()
